@@ -1226,6 +1226,7 @@ public:
 */
 
 
+/*
 //10.11 T2512
 
 class Solution {
@@ -1234,3 +1235,30 @@ public:
         
     }
 };
+*/
+
+
+/*
+typedef long long LL;
+class Solution {
+public:
+    long long findTheArrayConcVal(vector<int>& nums) {
+        LL res = 0; //答案
+        int len = nums.size(); //数组长度
+        int i,j;
+
+        for(i = 0,j = len - 1;i <= j;i++,j--)
+        {
+            if(i == j) res += nums[i];
+            else
+            {
+                string s1 = to_string(nums[i]),s2 = to_string(nums[j]);
+                s1 += s2;
+                res += stoi(s1);
+            }
+        }
+
+        return res;
+    }
+};
+*/
