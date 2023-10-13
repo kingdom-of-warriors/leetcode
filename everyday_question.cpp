@@ -1238,6 +1238,7 @@ public:
 */
 
 
+//10.12 T2562
 /*
 typedef long long LL;
 class Solution {
@@ -1257,8 +1258,55 @@ public:
                 res += stoi(s1);
             }
         }
-
         return res;
     }
 };
 */
+
+
+//10.12 T1130
+class Solution {
+public:
+    vector<vector<int>> dp; //记忆化搜索
+
+    int f(vector<int>& arr,int left,int right) //left和right是子树的边界
+    {
+        if(right == left) {dp[left][right] = 0;return 0;} //只有一个数
+        if(right - left == 1) {dp[left][right] = arr[right] * arr[left];return dp[left][right];} //间隔中一共只有两个数，直接返回乘积；
+
+        int res = INT_MAX;
+        for(int i = left;i < right;i++) //这是根节点左右子树，左边是left-i，右边是i+1-right
+        {
+            int max1 = 0,max2 = 0; //两侧的最大值
+            for(int j = left;j <= i;j++) max1 = max(max1,arr[j]);
+            for(int j = i + 1;j <= right;j++) max2 = max(max2,arr[j]); 
+
+            int s1,s2; //储存f(arr,left,i)和f(arr,i + 1,right)
+            if(dp[left][i] != -1) s1 = dp[left][i]; //已经访问过
+            else //没访问过
+            {
+                s1 = f(arr,left,i);
+                dp[left][i] = s1; //增加访问标志
+            }
+
+            if(dp[i + 1][right] != -1) s2 = dp[i + 1][right]; //已经访问过
+            else //没访问过
+            {
+                s2 = f(arr,i + 1,right);
+                dp[i + 1][right] = s2;
+            }
+            
+            res = min(res,max1 * max2 + s1 + s2); //动态规划过程
+        }
+
+        return res;
+    }
+    int mctFromLeafValues(vector<int>& arr) {
+        int len = arr.size();
+        //初始化记忆矩阵
+        dp.resize(len);
+        for(int i = 0;i < len;i++) dp[i].resize(len,-1);
+
+        return f(arr,0,len - 1);
+    }
+};

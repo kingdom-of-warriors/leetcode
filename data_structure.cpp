@@ -2985,15 +2985,30 @@ int main()
 }
 */
 
+vector<int> a;
+int n;
+class Solution {
+    int findTwo(int target)
+    {
+        int i = 0,j = n - 1,res = 0;
+        while(i < j)
+        {
+            if(a[i] + a[j] == target) {res++;i++;j--;}
+            else if (a[i] + a[j] < target) i++;
+            else j--;
+        }
+        return res;
+    }
+};
+
 int main()
 {
-	int m, i, n;
-	cin >> m >> i >> n;
-	int tmp = 1,tmp_;
-	for (int i = 2; i <= m; i++)
-	{
-		tmp_ = tmp;
-		tmp = (n + 1 + tmp_) % i;
-	}
-	cout << (tmp + i - 1) % m + 1;
+    cin >> n;
+    for(int i = 0;i < n;i++)
+    {
+        int b;
+        cin >> b;
+        a.push_back(b)
+    }
+    sort(a.begin(),a.end());
 }
