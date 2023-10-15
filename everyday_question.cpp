@@ -1264,6 +1264,7 @@ public:
 */
 
 
+/*
 //10.12 T1130
 class Solution {
 public:
@@ -1310,3 +1311,85 @@ public:
         return f(arr,0,len - 1);
     }
 };
+*/
+
+
+/*
+//10.13 T1488
+
+class Solution {
+public:
+    vector<int> avoidFlood(vector<int>& rains) {
+        int len = rains.size(); //数组长度
+        vector<int> noRains; //不下雨的天数的序号
+        int i;
+        for(i = 0;i < len;i++)
+        {
+            if(rains[i] == 0) noRains.push_back(i);
+        }
+
+        set<int> s; //储存一个一个的rains，用来判断
+        for(i = 0;i < len - 1;i++)
+        {
+            int leave = 
+            if(s.find(rains[i]) == s.end()) //rains[i]不在s里面
+            {
+                s.emplace(rains[i]); //插入
+                
+            }
+        }
+    }
+};
+*/
+
+
+/*
+//10.14 T136
+// a ^ a = 0,a ^ 0 = a,a ^ b ^ a = b
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int res = nums[0],len = nums.size();
+        for(int i = 1;i < len;i++)
+        {
+            res ^= nums[i]; //用异或来找，最后剩下的数就是重复两次的数字
+        }
+        return res;
+    }
+};
+*/
+
+
+/*
+//10.15 T137
+class Solution1 { //空间复杂度O(n)
+public:
+    int singleNumber(vector<int>& nums) {
+        unordered_map<int,int> hash;
+        for(int num : nums) hash[num]++;
+        for(int num : nums)
+        {
+            if(hash[num] == 1) return num;
+        }
+        return 0;
+    }
+};
+
+class Solution2 { //空间复杂度O(1)
+public:
+    int singleNumber(vector<int>& nums) {
+        int res = 0;
+        for(int i = 0;i < 32;i++) //每一轮的res表示第i位数的和
+        {
+            int bit = 0; //表示所有数字每一位的和
+            for(int num : nums)
+            {
+                bit += (num >> i) & 1; //num二进制第i位的值
+            }
+            if(bit % 3 != 0) res += pow(2,i);
+        }
+        return res;
+    }
+};
+*/
