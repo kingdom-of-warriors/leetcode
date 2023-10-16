@@ -1393,3 +1393,25 @@ public:
     }
 };
 */
+
+
+//10.16 T260
+
+class Solution {
+public:
+    vector<int> singleNumber(vector<int>& nums) {
+        int c = 0;
+        for(int num : nums) c = c ^ num;
+        //此时c是a ^ b
+        int numOfBit; //c的第一个1所在的位数，也就是a、b在第numOfBit位不相同
+        for(numOfBit = 0;numOfBit < 32;numOfBit++) if((c >> numOfBit) & 1) break;    
+
+        int a = 0;
+        for(int num : nums)
+        {
+            if(num >> numOfBit & 1) a = a ^ num; //把第numOfBit位为1的数字归为一类，并算出它们这一类的为唯一的数字
+        }
+
+        return {a,a ^ c};
+    }
+};
