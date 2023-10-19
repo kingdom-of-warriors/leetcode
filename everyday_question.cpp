@@ -1512,3 +1512,58 @@ public:
     }
 };
 */
+
+
+/*
+//10.18 T2530
+typedef long long LL;
+class Solution {
+public:
+    long long maxKelements(vector<int>& nums, int k) {
+        LL res = 0;
+        int len = nums.size();
+        priority_queue<int,vector<int>,less<int>> A; //大顶堆
+        for(int num : nums)
+        {
+            A.push(num);
+        }
+        while(k--)
+        {
+            int large = A.top();
+            A.pop();
+            res += large;
+            A.push(ceilf(large/3.0));
+        }
+        return res;
+    }
+};
+*/
+
+
+/*
+//10.19 T1726
+
+class Solution {
+public:
+    int tupleSameProduct(vector<int>& nums) {
+        unordered_map<int,int> hash; //储存乘积的哈希表
+        int len = nums.size();
+
+        for(int i = 0;i < len;i++)
+        {
+            for(int j = i + 1;j < len;j++)
+            {
+                hash[nums[i] * nums[j]]++; //储存乘积
+            }
+        }
+
+        int res = 0;
+        for(auto p : hash)
+        {
+            int s = p.second;
+            res += (s * (s - 1))/2 * 8; //一组相同的贡献八个
+        }
+        return res;
+    }
+};
+*/
