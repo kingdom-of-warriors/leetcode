@@ -1567,3 +1567,84 @@ public:
     }
 };
 */
+
+
+/*
+//10.21 T2316
+
+class Solution {
+public:
+    long long countPairs(int n, vector<vector<int>>& edges) {
+        vector<vector<int>> adj(n); //邻接表储存
+        vector<bool> visited(n); //判断是否访问过
+        long long res = 0;
+        for(auto edge : edges)
+        {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        
+        queue<int> que;
+        int top = 0;
+        for(int i = 0;i < n;i++)
+        {
+            if(!visited[i])
+            {
+                que.push(i);visited[i] = true;
+                long long num = 1;
+                while(!que.empty())
+                {
+                    top = que.front();que.pop();
+                    for(int dot : adj[top]) //与top相连的点
+                    {
+                        if(!visited[dot])
+                        {
+                            que.push(dot);
+                            visited[dot] = true;
+                            num++;
+                        }
+                    }
+                }
+                res += (num * (num - 1)) / 2;
+            }
+        }
+        long long n_ = n;
+        return (n_ * (n_ - 1))/2 - res;
+    }
+};
+*/
+
+
+// 10.25 T2698
+
+class Solution {
+public:
+    bool dfs(string &s,int start, int tar) //start是开始的位数，tar是目标值
+    {
+        int len = s.size(); //数组的长度
+        if(start == len) return tar == 0;
+
+        for(int j = start;j < len;j++) //分成两组，start---j、j+1---len-1
+        {
+            string tmp = s.substr(start, j - start + 1); //tmp记录当前的值
+            if(dfs(s, j + 1, tar - stoi(tmp))) return true; //dfs搜索
+        }
+        return false;
+    }
+    int punishmentNumber(int n) {
+        int res = 0;
+        for(int i = 1;i <= n;i++)
+        {
+            string s = to_string(i * i); //转换为字符串，方便操作
+            if(dfs(s, 0, i)) res += i * i;
+        }
+        return res;
+    }
+};
+
+int main()
+{
+    Solution A;
+    string s = "100";
+    cout << A.dfs(s, 0, 10);
+}
