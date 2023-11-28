@@ -571,7 +571,7 @@ public:
 
 /*
 //9.10 T210 课程表2
-class Solution {//经典拓扑排序
+class Solution1 {//经典拓扑排序
 public:
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
         vector<int> res;
@@ -609,6 +609,60 @@ public:
     }
 };
 */
+
+
+/*
+class Solution2 { //用DFS+时间戳来写
+public:
+    vector<vector<int>> adj; //邻接表储存
+    vector<int> start, finish; //开始和结束时间戳
+    vector<int> edge; //每个点的入度，入度为0的可以作为头节点进循环
+    vector<int> res; //答案数组
+    int idx; //时间戳
+    bool explore(int i, int &t) //输入是头节点
+    {
+        start[i] = t;
+        t++;
+        for(int next : adj[i])
+        {
+            if(start[next] != 0 && finish[next] == 0) return false;
+            else if(start[next] == 0 && finish[next] == 0) //没有被访问过
+            {
+                bool flag = explore(next, t);
+            }
+        }
+        finish[i] = t;
+        res[idx--] = i;
+        t++;
+        return true;
+    }
+
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        adj.resize(numCourses); start.resize(numCourses); finish.resize(numCourses); edge.resize(numCourses); res.resize(numCourses); idx = numCourses - 1;
+
+        for(auto pre : prerequisites)
+        {
+            int a = pre[0], b = pre[1];
+            adj[b].push_back(a);
+            edge[b]++;
+        }
+        //开始拓扑排序
+        bool flag1 = false;
+        int time = 1; //时间戳
+        for(int i = 0;i < numCourses;i++)
+        {
+            if(edge[i] == 0)
+            {
+                flag1 = true;
+                if(!explore(i, time)) return {}; //不能形成环
+            }
+        }
+        if(!flag1 || idx != -1) return {}; //没有入度为0的点且遍历完全
+        return res;
+    }
+};
+*/
+
 
 
 /*
@@ -1522,7 +1576,7 @@ public:
     long long maxKelements(vector<int>& nums, int k) {
         LL res = 0;
         int len = nums.size();
-        priority_queue<int,vector<int>,less<int>> A; //大顶堆
+        priority_queue<int,vector<int>,less<int>> A; //大顶堆，大的在顶上
         for(int num : nums)
         {
             A.push(num);
@@ -1615,6 +1669,7 @@ public:
 */
 
 
+/*
 // 10.25 T2698
 
 class Solution {
@@ -1641,10 +1696,29 @@ public:
         return res;
     }
 };
+*/
 
-int main()
-{
-    Solution A;
-    string s = "100";
-    cout << A.dfs(s, 0, 10);
-}
+
+/*
+//10.30 T275
+int len;
+class Solution {
+public:
+    int Find(vector<int>& citations, int left, int right)
+    {
+        if(left > right) return -1;
+        int mid = (left + right) / 2; //中间数
+
+        if(citations[mid] == len - mid) return 1;
+        if(citations[mid] < len - mid) return Find(citations, mid + 1, right);
+        if(citations[mid] > len - mid) return Find(citations, left, mid);
+    }
+
+    int hIndex(vector<int>& citations) {
+        //寻找a[i]>=n-i
+        len = citations.size(); //论文总数
+
+        return Find(citations, 0, len - 1); //后面是界限，用递归求解
+    }
+};
+*/
