@@ -1822,3 +1822,38 @@ public:
     }
 };
 */
+
+
+
+/*
+//2024.7.24 T2766
+// 给你一个下标从 0 开始的整数数组 nums ，表示一些石块的初始位置。再给你两个长度 相等 下标从 0 开始的整数数组 moveFrom 和 moveTo 。
+// 在 moveFrom.length 次操作内，你可以改变石块的位置。在第 i 次操作中，你将位置在 moveFrom[i] 的所有石块移到位置 moveTo[i] 。
+// 完成这些操作后，请你按升序返回所有 有 石块的位置。如果一个位置至少有一个石块，我们称这个位置 有 石块。一个位置可能会有多个石块。
+class Solution {
+public:
+    vector<int> relocateMarbles(vector<int>& nums, vector<int>& moveFrom, vector<int>& moveTo) {
+        unordered_map<int, int> num_index; // num_index[5]表示5位置有多少个石头
+        for(int rock_index: nums) num_index[rock_index]++; // 用nums初始化num_index
+
+        for(int i = 0; i < moveFrom.size(); i++) // 模拟过程
+        {
+            if(moveTo[i] != moveFrom[i])
+            {
+                num_index[moveTo[i]] += num_index[moveFrom[i]];
+                num_index[moveFrom[i]] = 0;
+            }
+        }
+        // 遍历哈希表, 找到答案
+        vector<int> res = {};
+        unordered_map<int, int>::iterator iter = num_index.begin();
+        for(; iter != num_index.end(); iter++)
+        {
+            if(iter->second != 0) res.push_back(iter->first);
+        }
+        sort(res.begin(), res.end());
+
+        return res;
+    }
+};
+*/
