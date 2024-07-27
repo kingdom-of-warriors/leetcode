@@ -3049,3 +3049,35 @@ int main()
 {
 }
 */
+
+
+// T1229 
+// 给定两个人的空闲时间表：slots1 和 slots2，以及会议的预计持续时间 duration，请你为他们安排 时间段最早 且合适的会议时间。
+// 如果没有满足要求的会议时间，就请返回一个 空数组。
+// 「空闲时间」的格式是 [start, end]，由开始时间 start 和结束时间 end 组成，表示从 start 开始，到 end 结束。 
+// 题目保证数据有效：同一个人的空闲时间不会出现交叠的情况，也就是说，对于同一个人的两个空闲时间 [start1, end1] 
+// 和 [start2, end2]，要么 start1 > end2，要么 start2 > end1。
+bool cmp1(vector<int> a, vector<int> b)
+{
+    return a[0] <= b[0];
+}
+class Solution {
+public:
+    vector<int> minAvailableDuration(vector<vector<int>>& slots1, vector<vector<int>>& slots2, int duration) {
+        int num1 = slots1.size(), num2 = slots2.size();
+
+        sort(slots1.begin(), slots1.end(), cmp1); //升序排列，当然这里不用cmp也行，而且会快很多
+        sort(slots2.begin(), slots2.end(), cmp1);
+        int i = 0, j = 0; //用双指针
+        while((i < num1) && (j < num2))
+        {
+            if(min(slots1[i][1], slots2[j][1]) - max(slots1[i][0], slots2[j][0]) >= duration)
+            {
+                return {max(slots1[i][0], slots2[j][0]), max(slots1[i][0], slots2[j][0]) + duration};
+            }
+            if(slots1[i][1] >= slots2[j][1]) j++;
+            else i++;
+        }
+        return {};
+    }
+};
