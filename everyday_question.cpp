@@ -1902,3 +1902,102 @@ public:
     }
 };
 */
+
+
+/*
+// T699 掉落的方块
+// 在二维平面上的 x 轴上，放置着一些方块。
+// 给你一个二维整数数组 positions ，其中 positions[i] = [lefti, sideLengthi] 表示：第 i 个方块边长为 sideLengthi ，其左侧边与 x 轴上坐标点 lefti 对齐。
+// 每个方块都从一个比目前所有的落地方块更高的高度掉落而下。方块沿 y 轴负方向下落，直到着陆到 另一个正方形的顶边 或者是 x 轴上 。
+// 一个方块仅仅是擦过另一个方块的左侧边或右侧边不算着陆。一旦着陆，它就会固定在原地，无法移动。
+// 在每个方块掉落后，你必须记录目前所有已经落稳的 方块堆叠的最高高度 。
+// 返回一个整数数组 ans ，其中 ans[i] 表示在第 i 块方块掉落后堆叠的最高高度。
+class Solution {
+public:
+    vector<int> fallingSquares(vector<vector<int>>& positions) {
+        vector<int> res;
+        vector<vector<int>> interval; //记录已经落下的区间
+        for(int i = 0; i < positions.size(); i++)
+        {
+            int ans = 0; //这一层的答案
+            for(int j = 0; j < interval.size(); j++)
+            {
+                if((positions[i][0] >= interval[j][1]) || (positions[i][0] +  positions[i][1] <= interval[j][0])) //没有重叠
+                {
+                    ans = max(ans, positions[i][1]);
+                }
+                else //有重叠
+                {
+                    
+                }
+            }
+            res.push_back(ans);
+        }
+        return res;
+    }
+};
+*/
+
+
+
+/*
+// 2024.8.5 T600
+// 给定一个正整数 n ，请你统计在 [0, n] 范围的非负整数中，有多少个整数的二进制表示中不存在连续的 1 。
+class Solution {
+public:
+    vector<int> res;
+    Solution() { res = vector<int>(40, 0); } //初始化函数
+
+    int findIntegersInOne(int n) { //有n个1的数字的答案
+        if(n == 0 || n == 1) return 0;
+        if(n == 2) return 1;
+        if(res[n] != 0) return res[n]; //记忆化搜索
+
+        res[n] = findIntegersInOne(n - 1) + findIntegersInOne(n - 2) + pow(2, n - 2);
+        return res[n];
+    }
+
+    string toBinary(int n) { //十进制转二进制
+        string r;
+        while (n != 0) 
+        {
+            r += (n % 2 == 0 ? "0" : "1");
+            n /= 2;
+        }
+        reverse(r.begin(), r.end());
+        return r;
+    }
+
+    int toDecimal(string binary) { //二进制转回十进制
+        int decimal = 0;
+        int length = binary.size();
+        for (int i = 0; i < length; ++i) {
+            if (binary[length - i - 1] == '1') {
+                decimal += pow(2, i);
+            }
+        }
+        return decimal;
+    }
+
+    int findIntegers_inverse(int n) { //计算有多少个有连续两个1的
+        string bin_n = toBinary(n); 
+        bool flag = false; //记录上一位是不是1
+        int res = 0; //答案
+        for(int i = 0; i < bin_n.size(); i++)
+        {
+            if(bin_n[i] == '1')
+            {
+                res += findIntegersInOne(bin_n.size() - i - 1);
+                if(flag) { //说明上一位也是1 
+                    return res + toDecimal(bin_n.substr(i + 1, bin_n.size() - i)) + 1;
+                }
+                flag = true; //这一位是1
+            }
+            else flag = false; //这一位是0
+        }
+        return res;
+    }
+
+    int findIntegers(int n) { return n + 1 - findIntegers_inverse(n);}
+};
+*/
