@@ -1939,7 +1939,6 @@ public:
 */
 
 
-
 /*
 // 2024.8.5 T600
 // 给定一个正整数 n ，请你统计在 [0, n] 范围的非负整数中，有多少个整数的二进制表示中不存在连续的 1 。
@@ -2000,4 +1999,66 @@ public:
 
     int findIntegers(int n) { return n + 1 - findIntegers_inverse(n);}
 };
+
+int main()
+{
+    Solution A;
+    cout << A.findIntegers(27) << endl;
+    return 0;
+}
 */
+
+
+
+//2024.8.6 T3129、3130
+// 给你 3 个正整数 zero ，one 和 limit 。
+// 一个 二进制数组 arr 如果满足以下条件，那么我们称它是 稳定的 ：
+// 0 在 arr 中出现次数 恰好 为 zero 。1 在 arr 中出现次数 恰好 为 one 。
+// arr 中每个长度超过 limit 的 子数组都 同时 包含 0 和 1 。
+// 请你返回 稳定 二进制数组的 总 数目。
+// 由于答案可能很大，将它对 10^9 + 7 取余 后返回。 1 <= zero, one, limit <= 200 （T3130是1000）
+
+typedef long long LL;
+const LL MAX = 1e9 + 7;
+class Solution {
+public:
+    vector<vector<LL>> dp_zero, dp_one;
+    int lim;
+    int size = 1002;
+    int numberOfStableArrays(int zero, int one, int limit) {
+        lim = limit;
+        dp_zero = vector<vector<LL>>(size, vector<LL>(size, -1)); 
+        dp_one = vector<vector<LL>>(size, vector<LL>(size, -1)); // 初步初始化
+        dp_zero[0][0] = 0; dp_one[0][0] = 0;
+        for(int i = 1; i < size; i++) dp_zero[i][0] = (i <= limit) ? 1 : 0; // 初始化 dp_zero和dp_one
+        for(int j = 1; j < size; j++) dp_one[0][j] = (j <= limit) ? 1 : 0; 
+        
+        return (arr0(zero, one) + arr1(zero, one) + MAX) % MAX;
+    }
+
+    int arr0(int zero, int one); // 提前声明函数原型
+    int arr1(int zero, int one); // 提前声明函数原型
+};
+
+int Solution::arr0(int zero, int one) {
+    if(zero < 0 || one < 0) return 0;
+    else if(dp_zero[zero][one] != -1) return dp_zero[zero][one]; // 记忆化
+
+    dp_zero[zero][one] = (arr0(zero - 1, one) + arr1(zero - 1, one) - arr1(zero - 1 - lim, one) + MAX) % MAX;
+    return dp_zero[zero][one];
+}
+
+int Solution::arr1(int zero, int one) {
+    if(zero < 0 || one < 0) return 0;
+    else if(dp_one[zero][one] != -1) return dp_one[zero][one]; // 记忆化
+
+    dp_one[zero][one] = (arr0(zero, one - 1) + arr1(zero, one - 1) - arr0(zero, one - 1 - lim) + MAX) % MAX;
+    return dp_one[zero][one];
+}
+int main()
+{
+    Solution A;
+    cout << A.numberOfStableArrays(3, 3, 2);
+    return 0;
+}
+

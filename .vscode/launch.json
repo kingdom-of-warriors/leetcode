@@ -1,7 +1,6 @@
 {
     "version": "0.2.0",
-    "configurations": [
-
+    "configurations": [ 
         {
             "name": "G++",
             "type": "cppdbg",
@@ -19,10 +18,6 @@
                     "description": "为 gdb 启用整齐打印",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
-                },{
-                    "description": "防止gdb打开标准库函数",
-                    "text": "-interpreter-exec console \"skip -rfu std::.*\"",
-                    "ignoreFailures": false
                 }
             ],
             "symbolLoadInfo": {
