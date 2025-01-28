@@ -2009,7 +2009,7 @@ int main()
 */
 
 
-
+/*
 //2024.8.6 T3129、3130
 // 给你 3 个正整数 zero ，one 和 limit 。
 // 一个 二进制数组 arr 如果满足以下条件，那么我们称它是 稳定的 ：
@@ -2058,7 +2058,59 @@ int Solution::arr1(int zero, int one) {
 int main()
 {   
     Solution A;
-    cout << A.numberOfStableArrays(3, 3, 2);
+    cout << A.numberOfStableArrays(3, 3, 2) << endl;
     return 0;
 }
+*/
+
+
+
+/*
+// 2024.12.26
+// 3083. 字符串及其反转中是否存在同一子字符串
+// 给你一个字符串 s ，请你判断字符串 s 是否存在一个长度为 2 的子字符串，在其反转后的字符串中也出现。
+// 如果存在这样的子字符串，返回 true；如果不存在，返回 false 。
+
+class Solution {
+public:
+    bool isSubstringPresent(string s) {
+        int len = s.size();
+        unordered_map<string, int> str_map; // 用哈希表记忆长度为 2 的子字符串的个数
+        for(int i = 0; i < len - 1; i++)
+        {
+            if(s[i] == s[i + 1]) return true;
+            str_map[s.substr(i, 2)]++;
+        }
+        reverse(s.begin(), s.end());
+        for(int i = 0; i < len - 1; i++)
+        {
+            if(str_map[s.substr(i, 2)] >= 1) return true;
+        }
+        return false;
+    }
+};
+*/
+
+
+/*
+// 2025.1.28 
+// 119. 杨辉三角 II
+// 给定一个非负索引 rowIndex，返回「杨辉三角」的第 rowIndex 行。
+class Solution {
+public:
+    vector<int> getRow(int rowIndex) {
+        vector<int> res(rowIndex + 1, 1); // 初始化答案
+        int midIndex = rowIndex / 2; // 中间数
+        for(int i = 1; i <= midIndex; i++)
+        {
+            res[i] = 1LL * res[i - 1] * (rowIndex + 1 - i) / i;
+            res[rowIndex - i] = res[i];
+        }
+
+        return res;
+    }
+};
+*/
+
+
 
