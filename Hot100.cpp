@@ -128,9 +128,10 @@ public:
 // T416 分割等和子集
 // 给你一个 只包含正整数 的 非空 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
 
+// 子集和等的问题使用背包问题的算法，是 NP-hard 问题。
 class Solution {
 public:
-    bool canPartition(vector<int>& nums) {
+    bool canPartition_raw(vector<int>& nums) {
         int total = accumulate(nums.begin(), nums.end(), 0);
         if (total % 2) return false; // 和不为 2 的倍数
         int target = total / 2; // 目标
@@ -149,6 +150,66 @@ public:
         }
 
         return dp[nums.size() - 1][target];
+    }
+
+    // 空间优化
+    bool canPartition(vector<int>& nums) {
+        int total = accumulate(nums.begin(), nums.end(), 0);
+        if(total % 2 != 0) return false;
+        
+        int target = total / 2;
+        vector<bool> dp(target + 1, false);
+        dp[0] = true;
+        
+        for(int num : nums) {
+            for(int j = target; j >= num; j--) { // 从后向前数，可规避空间问题！
+                dp[j] = dp[j] || dp[j - num];
+            }
+        }
+        
+        return dp[target];
+    }
+};
+*/
+
+
+
+/*
+// T5 最长回文子串
+// 给你一个字符串 s，找到 s 中最长的 回文子串。
+
+// 朴素想法是遍历整个子串的头尾（O(N^2）)，但这样会有一些重复检测行为。我们可以通过动态规划记录下检测过的子串位置！
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int length = s.size(); // 长度
+        vector<vector<int>> dp(length, vector<int>(length, 0)); // dp[i][j] 表示差为i,开头为j的位置的字符子串是否是回文子串
+        for(int i = 0; i < length; i++) dp[0][i] = 1; // 初始化：头尾是同一个位置，一定是回文（一个字母）
+        vector<int> res(2, 0); // 答案的差和开头
+        for(int i = 0; i < length - 1; i++) 
+        {   
+            if(s[i] == s[i + 1])
+            {
+                dp[1][i] = 1;  // 初始化，两个相邻字母一样，一定是回文
+                res[0] = 1;
+                res[1] = i;
+            }
+        }
+
+        
+        for(int i = 2; i < length; i++) // 表示两者之差
+        {
+            for(int j = 0; j < length - i; j++) // 第一项
+            {
+                if(s[j] == s[j + i] && dp[i - 2][j + 1])
+                {
+                    dp[i][j] = 1; // 这一对也是
+                    res[0] = i;
+                    res[1] = j;
+                }
+            }
+        }
+        return s.substr(res[0], res[1] - res[0] + 1);
     }
 };
 */
