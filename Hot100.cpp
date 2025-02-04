@@ -182,7 +182,7 @@ public:
 class Solution {
 public:
     string longestPalindrome(string s) {
-        int length = s.size(); // 长度
+        int length = s.size();\
         vector<vector<int>> dp(length, vector<int>(length, 0)); // dp[i][j] 表示差为i,开头为j的位置的字符子串是否是回文子串
         for(int i = 0; i < length; i++) dp[0][i] = 1; // 初始化：头尾是同一个位置，一定是回文（一个字母）
         vector<int> res(2, 0); // 答案的差和开头
@@ -210,6 +210,46 @@ public:
             }
         }
         return s.substr(res[0], res[1] - res[0] + 1);
+    }
+};
+*/
+
+
+/*
+// T1143 最长公共子序列
+// 给定两个字符串 text1 和 text2，返回这两个字符串的最长 公共子序列 的长度。如果不存在 公共子序列 ，返回 0 。
+// 一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
+// 例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。
+// 两个字符串的 公共子序列 是这两个字符串所共同拥有的子序列。
+
+// 思路：dp[i][j] 表示 t1[0,...,i] 与 t2[0,...,j] 的最长公共子序列长度，然后进行动态规划。
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int len1 = text1.size(); int len2 = text2.size();
+        vector<vector<int>> dp(len1, vector<int>(len2, 0)); // dp[i][j] 表示 t1[0,...,i] 与 t2[0,...,j] 的最长公共子序列长度
+        bool flag = false; // 用于赋初值
+        for(int j = 0; j < len2; j++)
+        {
+            if(text2[j] == text1[0]) flag = true;
+            if(flag) dp[0][j] = 1; // 赋初值
+        } 
+        flag = false;
+        for(int i = 0; i < len1; i++)
+        {
+            if(text1[i] == text2[0]) flag = true;
+            if(flag) dp[i][0] = 1; // 赋初值
+        } 
+
+        for(int i = 1; i < len1; i++)
+        {
+            for(int j = 1; j < len2; j++)
+            {
+                dp[i][j] = max({dp[i - 1][j - 1] + (text1[i] == text2[j]), dp[i - 1][j], dp[i][j - 1]});
+            }
+        }
+
+        return dp[len1 - 1][len2 - 1];
     }
 };
 */
