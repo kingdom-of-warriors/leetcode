@@ -253,3 +253,36 @@ public:
     }
 };
 */
+
+
+
+/*
+// T72 编辑距离
+// 给你两个单词 word1 和 word2， 请返回将 word1 转换成 word2 所使用的最少操作数  。
+// 你可以对一个单词进行如下三种操作：
+// 插入一个字符
+// 删除一个字符
+// 替换一个字符
+
+// 思路：dp[i][j] 表示 word1[0,,i] 和 word2[0,,j] 的编辑距离，进行动态规划。
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int len1 = word1.size(); int len2 = word2.size();
+        vector<vector<int>> dp(len1 + 1, vector<int>(len2 + 1, 0)); // dp[i][j] 表示 word1[0,,i-1] 和 word2[0,,j-1] 的编辑距离
+        for(int i = 0; i <= len1; i++) dp[i][0] = i; // 初始化第一列
+        for(int j = 0; j <= len2; j++) dp[0][j] = j; // 初始化第一行
+
+        for(int i = 1; i <= len1; i++)
+        {
+            for(int j = 1; j <= len2; j++)
+            {
+                if(word1[i - 1] == word2[j - 1]) dp[i][j] = dp[i - 1][j - 1]; // 如果结尾字母相等，则与 dp[i - 1][j - 1] 相等；
+                else dp[i][j] = min({dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]}) + 1; // 结尾字母不相等，则取这三个的最小值
+            }
+        }
+
+        return dp[len1][len2];
+    }
+};
+*/
