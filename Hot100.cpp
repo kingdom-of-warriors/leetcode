@@ -2,6 +2,15 @@
 
 using namespace std;
 
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 /*
 // 动态规划
 // 118. 杨辉三角
@@ -283,6 +292,106 @@ public:
         }
 
         return dp[len1][len2];
+    }
+};
+*/
+
+
+// 二叉树
+
+
+/*
+// 94. 二叉树的中序遍历
+// 给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。
+
+class Solution_recursion {
+public:
+    vector<int> res;
+    void inorder(TreeNode* root) {
+        if(!root) return;  // 修正：inorder函数是void类型，不应该返回res
+
+        inorder(root->left);
+        res.push_back(root->val);
+        inorder(root->right);
+    }
+    vector<int> inorderTraversal(TreeNode* root) {
+        inorder(root);
+        return res;
+    }
+};
+*/
+
+
+/*
+// T104. 二叉树的最大深度
+// 给定一个二叉树 root ，返回其最大深度。
+// 二叉树的 最大深度 是指从根节点到最远叶子节点的最长路径上的节点数。
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if(!root) return 0;
+        return max(maxDepth(root->left), maxDepth(root->right)) + 1;
+    }
+};
+*/
+
+
+// T226 翻转二叉树
+// class Solution {
+// public:
+//     void invert(TreeNode* root){
+//         if(!root) return;
+
+//         invert(root->left);
+//         invert(root->right);
+//         swap(root->left, root->right);
+//     }
+
+//     TreeNode* invertTree(TreeNode* root) {
+//         invert(root);
+//         return root;
+//     }
+// };
+
+
+
+/*
+// T101 对称二叉树
+class Solution {
+public:
+    bool isSymmetric_2(TreeNode* root1, TreeNode* root2) { // 判断以root1, root2为根节点的子树是否对称
+        if(!root1 && !root2) return true; // 两个空节点
+        if((!root1 && root2) || (root1 && !root2)) return false; // 一空一非空
+        return (root1->val == root2->val) && isSymmetric_2(root1->left, root2->right) && isSymmetric_2(root1->right, root2->left);
+        // 根节点相等，左节点左树和右节点右树对称，左节点右树和右节点左树对称
+    }
+
+    bool isSymmetric(TreeNode* root) {
+        return isSymmetric_2(root->left, root->right);
+    }
+};
+*/
+
+
+/*
+// T543 二叉树的直径
+// 给你一棵二叉树的根节点，返回该树的 直径 。
+// 二叉树的 直径 是指树中任意两个节点之间最长路径的 长度 。这条路径可能经过也可能不经过根节点 root 。
+// 两节点之间路径的 长度 由它们之间边数表示。
+class Solution {
+public:
+    int res = 0;
+    int maxDepth(TreeNode* root) {
+        if(!root) return 0;
+        int L = maxDepth(root->left);
+        int R = maxDepth(root->right);
+        res = max(res, L + R); // 计算深度同时更新 res
+        return max(L, R) + 1;
+    }
+
+    int diameterOfBinaryTree(TreeNode* root) {
+        int tmp = maxDepth(root);
+        return res;
     }
 };
 */
