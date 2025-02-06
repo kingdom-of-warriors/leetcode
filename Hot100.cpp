@@ -378,6 +378,8 @@ public:
 // 给你一棵二叉树的根节点，返回该树的 直径 。
 // 二叉树的 直径 是指树中任意两个节点之间最长路径的 长度 。这条路径可能经过也可能不经过根节点 root 。
 // 两节点之间路径的 长度 由它们之间边数表示。
+
+// 经过某个点的直径就是左子树深度加右子树深度！
 class Solution {
 public:
     int res = 0;
@@ -392,6 +394,76 @@ public:
     int diameterOfBinaryTree(TreeNode* root) {
         int tmp = maxDepth(root);
         return res;
+    }
+};
+*/
+
+
+/*
+// T102 二叉树的层序遍历
+// 给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）。
+
+// 思路：层序遍历，使用队列实现，思路详细见
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        TreeNode* eof = new TreeNode(-1); // 特殊节点，表示该层结束
+        queue<TreeNode*> q; // 队列
+        vector<vector<int>> res;
+        if(!root) return res;
+        q.push(root); // 进队
+        q.push(eof); // 空指针
+        vector<int> tmp; // 记录一层的元素
+        
+        while(!q.empty()) // 队列非空
+        {
+            TreeNode* t = q.front(); // 取出第一个元素
+            q.pop(); //  弹出这个元素
+            if(t == eof) // 访问到 NULL
+            {
+                res.push_back(tmp);
+                if(q.empty()) break;
+                tmp.clear(); // 清空 tmp
+                q.push(eof); // 上一层元素已经清空，NULL前的都是这一层元素！
+                continue;
+            }
+            tmp.push_back(t->val); // 记录下这个元素
+            if(t->left) q.push(t->left);
+            if(t->right) q.push(t->right);
+        }
+        return res;
+    }
+};
+*/
+
+
+/*
+// T108 将有序数组转化为二叉搜索数
+// 给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 平衡二叉搜索树。
+
+// 用递归的方式，不断选出中间元素
+class Solution {
+public:
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        if(nums.size() == 0) return nullptr;
+        if(nums.size() == 1)
+        {
+            TreeNode* root = new TreeNode(nums[0]);
+            return root;
+        }
+        int mid_idx = nums.size() / 2;
+        int mid = nums[mid_idx]; // 取出中间元素
+
+        TreeNode* root = new TreeNode(mid); // 根节点
+        vector<int> left_tree;
+        left_tree.assign(nums.begin(), nums.begin() + mid_idx);
+        root->left = sortedArrayToBST(left_tree);
+
+        vector<int> right_tree;
+        right_tree.assign(nums.begin() + mid_idx + 1, nums.end());
+        root->right = sortedArrayToBST(right_tree);
+
+        return root;
     }
 };
 */
