@@ -467,3 +467,37 @@ public:
     }
 };
 */
+
+
+
+/*
+// T98 验证二叉搜索树
+// 给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+// 有效 二叉搜索树定义如下：
+// 节点的左子树只包含 小于 当前节点的数。
+// 节点的右子树只包含 大于 当前节点的数。
+// 所有左子树和右子树自身必须也是二叉搜索树。
+
+// 思路：对于每个子树，更新其所要满足的上界和下界。或者可通过中序遍历为递增数列来确定。（为什么？）
+typedef long long LL;
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        return isValid_2(root, -2147483649, 2147483648);
+    }
+
+    bool isValid_2(TreeNode* root, LL min_val, LL max_val) // min_val 表示要大于这个值，max_val 表示要小于这个值
+    {
+        if(!root) return true;
+
+        bool right_bool, left_bool;
+        if(min_val < root->val && max_val > root->val) // 节点值满足要求
+        {
+            left_bool = isValid_2(root->left, min_val, root->val); // 检查左子树，增加一个大于的要求
+            right_bool = isValid_2(root->right, root->val, max_val); // 检查右子树，增加一个小于的要求
+            return right_bool && left_bool;
+        }
+        else return false; // 节点值不满足要求，返回 false
+    }
+};
+*/
