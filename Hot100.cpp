@@ -415,7 +415,12 @@ public:
             {
                 s.push(root);
                 root = root->left;
-            }
+            }class Solution {
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        
+    }
+};
             else
             {
                 root = s.top();
@@ -426,6 +431,46 @@ public:
             }
         }
         return -1;
+    }
+};
+*/
+
+
+/*
+// T199 二叉树的右视图
+// 给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+// 思路：返回每一行的最右边的元素，参考二叉树的层序遍历。
+class Solution {
+public:
+    vector<int> rightSideView(TreeNode* root) {
+        TreeNode* eof = new TreeNode(-1); // 特殊节点，表示这一行结束
+        vector<int> res; // 答案数组
+        if(!root) return res; // 特殊情况
+
+        queue<TreeNode*> q;
+        q.push(root); // 根部进队
+        q.push(eof); // 第一行结束
+
+        TreeNode* a; // 用于遍历
+        TreeNode* pre; // 保存遍历的上一个节点
+        while(!q.empty())
+        {
+            a = q.front(); // 取出头部
+            q.pop();
+            if(a == eof) // 如果是特殊字符，那么说明这一行结束
+            {
+                res.push_back(pre->val);
+                if(q.empty()) 
+                {   
+                    break; // 若除掉特殊字符没有别的元素，说明遍历完成
+                }
+                q.push(eof); // 往队列里加入eof，这说明这一行元素没有了
+            }
+            pre = a;
+            if(a->left) q.push(a->left);
+            if(a->right) q.push(a->right);
+        }
+        return res;
     }
 };
 */
