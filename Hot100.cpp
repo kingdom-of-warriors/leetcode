@@ -399,105 +399,33 @@ public:
 */
 
 
-/*
-// T102 二叉树的层序遍历
-// 给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）。
 
-// 思路：层序遍历，使用队列实现，思路详细见
+/*
+// T230 二叉搜索树的第k小元素
+// 给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 小的元素（从 1 开始计数）。
+
+// 思路：用栈实现中序遍历，取第k项，用栈详见 https://blog.csdn.net/qq_43753525/article/details/102905590
 class Solution {
 public:
-    vector<vector<int>> levelOrder(TreeNode* root) {
-        TreeNode* eof = new TreeNode(-1); // 特殊节点，表示该层结束
-        queue<TreeNode*> q; // 队列
-        vector<vector<int>> res;
-        if(!root) return res;
-        q.push(root); // 进队
-        q.push(eof); // 空指针
-        vector<int> tmp; // 记录一层的元素
-        
-        while(!q.empty()) // 队列非空
+    int kthSmallest(TreeNode* root, int k) {
+        stack<TreeNode*> s; // 栈，用于中序遍历
+        while(root || !s.empty())
         {
-            TreeNode* t = q.front(); // 取出第一个元素
-            q.pop(); //  弹出这个元素
-            if(t == eof) // 访问到 NULL
+            if(root)
             {
-                res.push_back(tmp);
-                if(q.empty()) break;
-                tmp.clear(); // 清空 tmp
-                q.push(eof); // 上一层元素已经清空，NULL前的都是这一层元素！
-                continue;
+                s.push(root);
+                root = root->left;
             }
-            tmp.push_back(t->val); // 记录下这个元素
-            if(t->left) q.push(t->left);
-            if(t->right) q.push(t->right);
+            else
+            {
+                root = s.top();
+                k--;
+                if(k == 0) return root->val;
+                s.pop();
+                root = root->right;
+            }
         }
-        return res;
-    }
-};
-*/
-
-
-/*
-// T108 将有序数组转化为二叉搜索数
-// 给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 平衡二叉搜索树。
-
-// 用递归的方式，不断选出中间元素
-class Solution {
-public:
-    TreeNode* sortedArrayToBST(vector<int>& nums) {
-        if(nums.size() == 0) return nullptr;
-        if(nums.size() == 1)
-        {
-            TreeNode* root = new TreeNode(nums[0]);
-            return root;
-        }
-        int mid_idx = nums.size() / 2;
-        int mid = nums[mid_idx]; // 取出中间元素
-
-        TreeNode* root = new TreeNode(mid); // 根节点
-        vector<int> left_tree;
-        left_tree.assign(nums.begin(), nums.begin() + mid_idx);
-        root->left = sortedArrayToBST(left_tree);
-
-        vector<int> right_tree;
-        right_tree.assign(nums.begin() + mid_idx + 1, nums.end());
-        root->right = sortedArrayToBST(right_tree);
-
-        return root;
-    }
-};
-*/
-
-
-
-/*
-// T98 验证二叉搜索树
-// 给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
-// 有效 二叉搜索树定义如下：
-// 节点的左子树只包含 小于 当前节点的数。
-// 节点的右子树只包含 大于 当前节点的数。
-// 所有左子树和右子树自身必须也是二叉搜索树。
-
-// 思路：对于每个子树，更新其所要满足的上界和下界。或者可通过中序遍历为递增数列来确定。（为什么？） 
-typedef long long LL;
-class Solution {
-public:
-    bool isValidBST(TreeNode* root) {
-        return isValid_2(root, -2147483649, 2147483648);
-    }
-
-    bool isValid_2(TreeNode* root, LL min_val, LL max_val) // min_val 表示要大于这个值，max_val 表示要小于这个值
-    {
-        if(!root) return true;
-
-        bool right_bool, left_bool;
-        if(min_val < root->val && max_val > root->val) // 节点值满足要求
-        {
-            left_bool = isValid_2(root->left, min_val, root->val); // 检查左子树，增加一个大于的要求
-            right_bool = isValid_2(root->right, root->val, max_val); // 检查右子树，增加一个小于的要求
-            return right_bool && left_bool;
-        }
-        else return false; // 节点值不满足要求，返回 false
+        return -1;
     }
 };
 */
