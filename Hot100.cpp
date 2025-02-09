@@ -460,10 +460,7 @@ public:
             if(a == eof) // 如果是特殊字符，那么说明这一行结束
             {
                 res.push_back(pre->val);
-                if(q.empty()) 
-                {   
-                    break; // 若除掉特殊字符没有别的元素，说明遍历完成
-                }
+                if(q.empty()) break; // 若除掉特殊字符没有别的元素，说明遍历完成
                 q.push(eof); // 往队列里加入eof，这说明这一行元素没有了
             }
             pre = a;
@@ -473,4 +470,66 @@ public:
         return res;
     }
 };
+*/
+
+
+/*
+// T114 二叉树展开为列表
+// 给你二叉树的根结点 root ，请你将它展开为一个单链表：
+// 展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。
+// 展开后的单链表应该与二叉树 先序遍历 顺序相同。
+
+// 思路：空间 O(N)，用栈实现前序遍历，未成功，等学完链表再来写这道题！
+class Solution {
+public:
+    TreeNode* flatten(TreeNode* root) { 
+        TreeNode* res;
+        TreeNode* head = new TreeNode(-1, nullptr, res); // 头节点
+        if(!root) return root;
+
+        stack<TreeNode*> s;
+        TreeNode* p = root; // 用于遍历
+        while(!s.empty() || p)
+        {
+            if(p) // p 不为空
+            {
+                s.push(p);
+                res = new TreeNode(p->val);
+                res = res->right;
+                p = p->left;
+            }
+            else // p为空指针
+            {
+                p = s.top();
+                s.pop();
+                p = p->right;
+            }
+
+        }
+        root = head->right;
+        return root;
+    }
+};
+
+int main() {
+    // 创建一个示例二叉树
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(5);
+    root->left->left = new TreeNode(3);
+    root->left->right = new TreeNode(4);
+    root->right->right = new TreeNode(6);
+
+    Solution solution;
+    TreeNode* flattened = solution.flatten(root);
+
+    // 打印展开后的链表
+    while(flattened) {
+        cout << flattened->val << " ";
+        flattened = flattened->right;
+    }
+    cout << endl;
+
+    return 0;
+}
 */
