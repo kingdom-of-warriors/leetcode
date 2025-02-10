@@ -539,6 +539,8 @@ int main() {
 // T437 路径总和
 // 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。
 // 路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+
+// 思路：通过树结构进行递归。
 class Solution {
 public:
     long long res = 0;
@@ -570,6 +572,49 @@ public:
         if(!root) return 0;
         pathSum_1(root, targetSum, false);
         return res;
+    }
+};
+*/
+
+
+
+/*
+// T236 二叉树的最近公共祖先
+// 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+// 百度百科中最近公共祖先的定义为："对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。"
+class Solution {
+public:
+    bool isInTree(TreeNode* root, TreeNode* p) // 判断p是否在以root为根的子树上
+    {
+        if(!root) return false;
+        if(root == p) return true;
+        return isInTree(root->left, p) || isInTree(root->right, p); // 要么在左子树，要么在右子树
+    }
+
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(p == root || q == root) return root;
+
+        if(isInTree(root->left, p) && isInTree(root->left, q)) // 都在左子树上
+        {
+            return lowestCommonAncestor(root->left, p, q);
+        }
+        else if(isInTree(root->right, p) && isInTree(root->right, q)) // 都在右子树上
+        {
+            return lowestCommonAncestor(root->right, p, q);
+        }
+        else return root; // 一个在左，一个在右
+    }
+
+    TreeNode* lowestCommonAncestor_2(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(!root) return nullptr;
+        if(p == root || q == root) return root;
+
+        TreeNode* res_left = lowestCommonAncestor_2(root->left, p, q); // 在不在左子树上
+        TreeNode* res_right = lowestCommonAncestor_2(root->right, p, q); // 在不在右子树上
+        if(res_left && res_right) return root; // 说明两个点一个在左子树上一个在右子树上
+        if(res_left == nullptr) return res_right;
+        if(res_right == nullptr) return res_left;
+        return NULL;
     }
 };
 */
