@@ -11,6 +11,12 @@ struct TreeNode {
     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
+
 /*
 // 动态规划
 // 118. 杨辉三角
@@ -615,6 +621,91 @@ public:
         if(res_left == nullptr) return res_right;
         if(res_right == nullptr) return res_left;
         return NULL;
+    }
+};
+*/
+
+
+
+
+// 链表
+
+/*
+// T160 相交链表
+// 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。
+
+// 思路：全部入栈，从后向前出栈
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        stack<ListNode *> s1, s2;
+        ListNode *p, *q, *res; // 两个用于遍历的指针，一个答案指针
+        p = headA; q = headB; // 赋初值
+        while(p) {s1.push(p);p = p->next;}
+        while(q) {s2.push(q);q = q->next;}
+
+        if(s1.top() != s2.top()) return NULL;
+        while(s1.top() == s2.top())
+        {
+            res = s1.top();
+            s1.pop(); s2.pop(); // 不是这一项
+            if(s1.empty() || s2.empty()) return res; // 但凡有一个空了，都要返回
+        }
+        return res;
+    }
+};
+*/
+
+
+/*
+// T206 反转链表
+// 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+
+// 思路：栈
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if(!head) return nullptr; // 空链表特判
+        
+        stack<ListNode*> s;
+        ListNode *p = head; // 用于遍历
+        while(p) {s.push(p); p = p->next;}
+
+        ListNode *new_head = s.top(); // 新头
+        s.pop();
+        p = new_head; // 这里重复定义了p变量,应该直接使用上面的p
+        while(!s.empty())
+        {
+            p->next = s.top();
+            s.pop();
+            p = p->next;
+        }
+        p->next = nullptr; // 最后一个节点的next需要置空,否则可能形成环
+        return new_head;
+    }
+};
+*/
+
+
+/*
+// T234 回文链表
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        if(!head) return true;
+        vector<int> l;
+        ListNode *p = head;
+        while(p)
+        {
+            l.push_back(p->val);
+            p = p->next;
+        }
+        if(l.size() == 1) return true; // 只有一项
+        for(int i = 0; i <= l.size() / 2; i++)
+        {
+            if(l[i] != l[l.size() - i - 1]) return false;// 有一个不相等，返回false
+        }
+        return true;
     }
 };
 */
