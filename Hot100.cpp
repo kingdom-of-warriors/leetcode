@@ -753,3 +753,119 @@ public:
     }
 };
 */
+
+
+/*
+// T21 合并两个有序链表
+// 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode *p = list1, *q = list2; // 两个用于遍历的指针
+        ListNode *new_head = new ListNode(0);
+        ListNode *k = new_head; // 也是用于遍历的指针
+
+        while(p && q) // 当两个都不为空指针时
+        {
+            if(p->val <= q->val)
+            {
+                ListNode *new_node = new ListNode(p->val);
+                k->next = new_node;
+                k = k->next;
+                p = p->next;
+            }
+            else
+            {
+                ListNode *new_node = new ListNode(q->val);
+                k->next = new_node;
+                k = k->next;
+                q = q->next;
+            }
+        }
+        // 以下两个 while 最多只有一个被运行
+        while(p)
+        {
+            ListNode *new_node = new ListNode(p->val);
+            k->next = new_node;
+            k = k->next;
+            p = p->next;
+        }
+        while(q)
+        {
+            ListNode *new_node = new ListNode(q->val);
+            k->next = new_node;
+            k = k->next;
+            q = q->next;
+        }
+
+        return new_head->next;
+    }
+};
+*/
+
+
+/*
+// T2 两数相加
+// 给你两个 非空 的链表，表示两个非负的整数。它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字。
+// 请你将两个数相加，并以相同形式返回一个表示和的链表。
+// 你可以假设除了数字 0 之外，这两个数都不会以 0 开头。
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode *p = l1, *q = l2; // 用于遍历两个链表
+        ListNode *new_head = new ListNode(0); // 新链表，用于储存答案
+        ListNode *k = new_head; // 用于延伸答案链表
+        
+        bool is_carry = false; // 是否进位
+        while(p && q)
+        {
+            int sum = p->val + q->val + is_carry;
+            if(sum >= 10) 
+            {
+                sum -= 10;
+                is_carry = true;
+            }
+            else is_carry = false;
+            ListNode *new_node = new ListNode(sum); // 建立新节点
+            k->next = new_node;
+            k = k->next; p = p->next; q = q->next; // 更新三个遍历指针
+        }
+        // 以下两个 while 最多只有一个被运行
+        while(p)
+        {
+            int sum = p->val + is_carry;
+            if(sum >= 10) 
+            {
+                sum -= 10;
+                is_carry = true;
+            }
+            else is_carry = false;
+            ListNode *new_node = new ListNode(sum); // 建立新节点
+            k->next = new_node;
+            k = k->next; p = p->next;
+        }
+        while(q)
+        {
+            int sum = q->val + is_carry;
+            if(sum >= 10) 
+            {
+                sum -= 10;
+                is_carry = true;
+            }
+            else is_carry = false;
+            ListNode *new_node = new ListNode(sum); // 建立新节点
+            k->next = new_node;
+            k = k->next; q = q->next;
+        }
+
+        if(is_carry) // 最后一位也要进位，前面要多一个1: 如 999 + 1 = 1000
+        {
+            ListNode *new_node = new ListNode(1); // 建立新节点
+            k->next = new_node;
+        }
+
+        return new_head->next;
+    }
+};
+*/
