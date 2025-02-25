@@ -869,3 +869,53 @@ public:
     }
 };
 */
+
+
+/*
+// T19 删除链表的倒数第N个节点
+// 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        vector<ListNode*> l; // 用于储存链表元素
+        ListNode *p = head; // 用于遍历
+        while(p)
+        {
+            l.push_back(p);
+            p = p->next;
+        }
+        // 分三种情况，头、尾、中间
+        if(l.size() == 1) return nullptr; // 只有一个元素，那么它一定被删掉
+        if(n == 1) // 要删除的是尾
+        {
+            l[l.size() - 2]->next = nullptr; // 断联
+            return head;
+        }
+        if(n == l.size()) return head->next; // 要删除的是头
+        // 要删除的是中间
+        l[l.size() - n - 1]->next = l[l.size() - n + 1];
+        return head;
+    }
+};
+*/
+
+/*
+// T19 两两交换链表中的节点
+// 给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。
+
+// 思路：显然是利用递归，一次交换一对相邻的节点
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(!head || !head->next) return head;  // 如果链表为空或只有一个节点，直接返回
+        // 交换前两个
+        ListNode *tmp = head->next;  // 保存第二个节点
+        head->next = tmp->next;      // 第一个节点指向第三个节点
+        tmp->next = head;            // 第二个节点指向第一个节点
+        
+        tmp->next->next = swapPairs(tmp->next->next);  // 递归处理剩余的节点对
+        return tmp;  // 返回新的头节点（原来的第二个节点）
+    }
+};
+*/
