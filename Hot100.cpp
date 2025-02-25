@@ -919,3 +919,31 @@ public:
     }
 };
 */
+
+
+/*
+// 25. K 个一组翻转链表
+// 给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。
+// k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+// 你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        if(k == 1) return head;                          // 如果k=1则无需翻转，直接返回头节点
+        int i = k;                                       // 计数器，用于检查是否有k个节点
+        ListNode *p = head;                              // 遍历指针
+        vector<ListNode*> l;                             // 存储k个节点的数组
+        while(i--)                                       // 尝试获取k个节点
+        {
+            if(!p) return head;                          // 如果不足k个节点，保持原序返回
+            l.push_back(p);                              // 将节点存入数组
+            p = p->next;                                 // 移动到下一个节点
+        }
+        ListNode *tmp = l[k - 1]->next;                  // 保存下一组的起始节点
+        for(int i = k - 1; i >= 1; i--) l[i]->next = l[i - 1];  // 反转当前k个节点
+        l[0]->next = reverseKGroup(tmp, k);              // 递归处理剩余节点
+        return l[k - 1];                                 // 返回当前组反转后的头节点
+    }
+};
+*/
