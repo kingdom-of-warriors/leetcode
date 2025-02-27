@@ -1000,3 +1000,62 @@ public:
     }
 };
 */
+
+
+/*
+// T148 排序链表
+// 给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。
+// 思路：当作数组一样归并排序
+class Solution {
+public:
+    vector<ListNode*> l; // 用于储存节点，相当于转化为数组的排序
+    ListNode* sortList(ListNode* head) {
+        if(!head) return head; // 如果头节点为空，直接返回
+        ListNode *p = head; // 定义指针p指向头节点
+        while(p) // 遍历链表
+        {
+            l.push_back(p); // 将节点添加到vector中
+            p = p->next; // 指针后移
+        }
+        merge_sort(0, l.size() - 1); // 归并排序
+        return head; // 返回头节点
+
+    }
+    void merge_sort(int begin, int end) // 归并排序，用于递归
+    {
+        if(begin == end) return; // 递归终止条件
+        int mid = (end - begin) / 2 + begin; // 取出中间节点，begin-mid为一组，mid+1-end为一组，默认这两组已经有序
+        merge_sort(begin, mid); // 递归排序左半部分
+        merge_sort(mid + 1, end); // 递归排序右半部分
+        int i = begin, j = mid + 1, k = 0; // 定义三个指针，i指向左半部分起始，j指向右半部分起始，k指向临时数组起始
+        vector<int> tmp(end - begin + 1); // 定义临时数组
+        while(i <= mid && j <= end) // 当左右两边都有元素时
+        {
+            if(l[i]->val <= l[j]->val) tmp[k++] = l[i++]->val; // 如果左边小于等于右边，将左边放入临时数组
+                
+            else tmp[k++] = l[j++]->val; // 否则将右边放入临时数组
+        }
+        while(i <= mid) tmp[k++] = l[i++]->val; // 将左边剩余元素放入临时数组
+        while(j <= end) tmp[k++] = l[j++]->val; // 将右边剩余元素放入临时数组
+        for(int i = begin; i <= end; i++) l[i]->val = tmp[i - begin]; // 将临时数组赋值回原数组
+    }
+};
+*/
+
+
+/*
+// T283 移动零
+// 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+// 请注意 ，必须在不复制数组的情况下原地对数组进行操作。
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        int idx = 0; // 表示下一个非零元素应该放置的位置
+        for(int i = 0; i < nums.size(); i++) // 遍历整个数组
+        {
+            if(nums[i] != 0) nums[idx++] = nums[i]; // 如果当前元素不是0，则将其移动到idx位置，并将idx加1
+        }
+        for(; idx < nums.size(); idx++) nums[idx] = 0; // 将idx之后的所有元素设置为0
+    }
+};
+*/
