@@ -1002,42 +1002,146 @@ public:
 */
 
 
+
 /*
 // T148 排序链表
 // 给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。
 // 思路：当作数组一样归并排序
 class Solution {
 public:
-    vector<ListNode*> l; // 用于储存节点，相当于转化为数组的排序
+    // vector<ListNode*> l; // 用于储存节点，相当于转化为数组的排序
+    // ListNode* sortList(ListNode* head) {
+    //     if(!head) return head; // 如果头节点为空，直接返回
+    //     ListNode *p = head; // 定义指针p指向头节点
+    //     while(p) // 遍历链表
+    //     {
+    //         l.push_back(p); // 将节点添加到vector中
+    //         p = p->next; // 指针后移
+    //     }
+    //     merge_sort(0, l.size() - 1); // 归并排序
+    //     return head; // 返回头节点
+
+    // }
+    // void merge_sort(int begin, int end) // 归并排序，用于递归
+    // {
+    //     if(begin == end) return; // 递归终止条件
+    //     int mid = (end - begin) / 2 + begin; // 取出中间节点，begin-mid为一组，mid+1-end为一组，默认这两组已经有序
+    //     merge_sort(begin, mid); // 递归排序左半部分
+    //     merge_sort(mid + 1, end); // 递归排序右半部分
+    //     int i = begin, j = mid + 1, k = 0; // 定义三个指针，i指向左半部分起始，j指向右半部分起始，k指向临时数组起始
+    //     vector<int> tmp(end - begin + 1); // 定义临时数组
+    //     while(i <= mid && j <= end) // 当左右两边都有元素时
+    //     {
+    //         if(l[i]->val <= l[j]->val) tmp[k++] = l[i++]->val; // 如果左边小于等于右边，将左边放入临时数组
+                
+    //         else tmp[k++] = l[j++]->val; // 否则将右边放入临时数组
+    //     }
+    //     while(i <= mid) tmp[k++] = l[i++]->val; // 将左边剩余元素放入临时数组
+    //     while(j <= end) tmp[k++] = l[j++]->val; // 将右边剩余元素放入临时数组
+    //     for(int i = begin; i <= end; i++) l[i]->val = tmp[i - begin]; // 将临时数组赋值回原数组
+    // }
+
+    // 再写一个链表版
     ListNode* sortList(ListNode* head) {
         if(!head) return head; // 如果头节点为空，直接返回
-        ListNode *p = head; // 定义指针p指向头节点
-        while(p) // 遍历链表
-        {
-            l.push_back(p); // 将节点添加到vector中
-            p = p->next; // 指针后移
-        }
-        merge_sort(0, l.size() - 1); // 归并排序
-        return head; // 返回头节点
-
+        ListNode *tail = head;
+        while(tail->next) tail = tail->next;
+        merge_sort_link_list(head, tail);
+        return head;
     }
-    void merge_sort(int begin, int end) // 归并排序，用于递归
+
+    void merge_sort_link_list(ListNode *begin, ListNode *end)
     {
-        if(begin == end) return; // 递归终止条件
-        int mid = (end - begin) / 2 + begin; // 取出中间节点，begin-mid为一组，mid+1-end为一组，默认这两组已经有序
-        merge_sort(begin, mid); // 递归排序左半部分
-        merge_sort(mid + 1, end); // 递归排序右半部分
-        int i = begin, j = mid + 1, k = 0; // 定义三个指针，i指向左半部分起始，j指向右半部分起始，k指向临时数组起始
-        vector<int> tmp(end - begin + 1); // 定义临时数组
-        while(i <= mid && j <= end) // 当左右两边都有元素时
+        if(begin == end) return;
+        ListNode *slow = begin, *fast = begin; // 快慢指针找中间节点
+        while(fast != end)
         {
-            if(l[i]->val <= l[j]->val) tmp[k++] = l[i++]->val; // 如果左边小于等于右边，将左边放入临时数组
-                
-            else tmp[k++] = l[j++]->val; // 否则将右边放入临时数组
+            fast = fast->next;
+            if(fast == end) break;
+            else 
+            {
+                fast = fast->next;
+                slow = slow->next;
+            }
         }
-        while(i <= mid) tmp[k++] = l[i++]->val; // 将左边剩余元素放入临时数组
-        while(j <= end) tmp[k++] = l[j++]->val; // 将右边剩余元素放入临时数组
-        for(int i = begin; i <= end; i++) l[i]->val = tmp[i - begin]; // 将临时数组赋值回原数组
+        merge_sort_link_list(begin, slow); // 当作这两组是有序的
+        merge_sort_link_list(slow->next, end);
+        // 开始合并
+        ListNode *p = begin, *q = slow->next;
+        vector<int> tmp; // 用于记录接下来的有序链表的值
+        while(p != slow->next && q != end->next)
+        {
+            if(p->val <= q->val)
+            {
+                tmp.push_back(p->val);
+                p = p->next;
+            }
+            else
+            {
+                tmp.push_back(q->val);
+                q = q->next;
+            }
+        }
+        while(p != slow->next)
+        {
+            tmp.push_back(p->val);
+            p = p->next;
+        }
+        while(q != end->next)
+        {
+            tmp.push_back(q->val);
+            q = q->next;
+        }
+        p = begin;
+        for(int i = 0; i < tmp.size(); i++)
+        {
+            p->val = tmp[i];
+            p = p->next;
+        }
+    }
+};
+*/
+
+
+/*
+// T23 合并 k 个升序链表
+
+// 给你一个链表数组，每个链表都已经按升序排列。
+// 请你将所有链表合并到一个升序链表中，返回合并后的链表。
+
+// 思路：和合并两个有序链表一样来写
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        int k = lists.size(); // 要合并链表的个数
+        vector<ListNode*> p(k, nullptr); // 遍历时用的节点
+        ListNode *head = new ListNode(0); // 哨兵节点
+        ListNode *q = head; // 用于接链表
+        for(int i = 0; i < k; i++) p[i] = lists[i]; // 赋初值
+        
+        while(true)
+        {
+            bool flag = true;
+            for(int i = 0; i < k; i++)
+            {
+                if(!p[i]) 
+                {
+                    flag = false;
+                    break;
+                }
+            }
+            if(!flag) break;
+            else
+            {
+                auto min_iter = min_element(p.begin(), p.end(), [](ListNode* a, ListNode* b) {return a->val <= b->val;});
+                ListNode *new_node = new ListNode((*min_iter)->val);
+                q->next = new_node; q = q->next;
+                
+                int min_idx = distance(p.begin(), min_iter);
+                p[min_idx] = p[min_idx]->next;
+            }
+        }
+        
     }
 };
 */
@@ -1056,6 +1160,55 @@ public:
             if(nums[i] != 0) nums[idx++] = nums[i]; // 如果当前元素不是0，则将其移动到idx位置，并将idx加1
         }
         for(; idx < nums.size(); idx++) nums[idx] = 0; // 将idx之后的所有元素设置为0
+    }
+};
+*/
+
+
+// 栈
+
+
+/*
+// T20 有效的括号
+// 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+// 有效字符串需满足：
+// 左括号必须用相同类型的右括号闭合。
+// 左括号必须以正确的顺序闭合。
+// 每个右括号都有一个对应的相同类型的左括号。
+
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> stk; int i = 0;
+        while(i != s.size())
+        {
+            if(stk.empty()) 
+            {
+                stk.push(s[i++]);
+                continue;
+            }
+            if(s[i] == ')')
+            {
+                char t = stk.top();
+                if(t == '(') stk.pop();
+                else stk.push(s[i]);
+            }
+            else if(s[i] == ']')
+            {
+                char t = stk.top();
+                if(t == '[') stk.pop();
+                else stk.push(s[i]);
+            }
+            else if(s[i] == '}')
+            {
+                char t = stk.top();
+                if(t == '{') stk.pop();
+                else stk.push(s[i]);
+            }
+            else stk.push(s[i]);
+            i++;
+        }
+        return stk.empty();
     }
 };
 */
