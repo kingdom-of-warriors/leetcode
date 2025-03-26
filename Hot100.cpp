@@ -1212,3 +1212,47 @@ public:
     }
 };
 */
+
+
+// T128 最长连续序列
+// 给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
+// 请你设计并实现时间复杂度为 O(n) 的算法解决此问题。
+
+// class Solution {
+// public:
+//     int longestConsecutive(vector<int>& nums) {
+//         if(nums.empty()) return 0;
+//         unordered_map<int, int> hash_map;
+//         for(int i = 0; i < nums.size(); i++) hash_map[nums[i]]++;
+//         // int min_value = *min_element(nums.begin(), nums.end()); // 取得最小值
+//         int res = 1; int max_res = -1;
+
+//         for(auto it = hash_map.begin(); it != hash_map.end(); ++it)
+//         {
+//             if(it->second == -1) continue;
+//             else
+//             {
+//                 int tmp = it->first + 1;
+//                 while(hash_map.count(tmp))
+//                 {
+//                     res++;
+//                     tmp++;
+//                     hash_map[tmp] = -1;
+//                 }
+//                 max_res = max(res, max_res);
+//                 res = 1;
+//             }
+//         }
+//         return max_res;
+//     }
+// };
+
+int main()
+{
+    cout << "请输入n: ";
+    int n; cin >> n;
+    vector<int> F(n + 1); // F(n) 为得到n的最小操作数
+    for(int i = 1; i <= n; i++) F[i] = ((i % 2) ? F[i - 1] : min(F[i / 2], F[i - 1])) + 1;
+    cout << "至少需要的操作数为："<< F[n] << endl;
+    return 0;
+}
