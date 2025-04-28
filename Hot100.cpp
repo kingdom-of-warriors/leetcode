@@ -1336,3 +1336,267 @@ public:
     }
 };
 */
+
+
+
+/*
+// T34. 在排序数组中查找元素的第一个和最后一个位置
+// 给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。
+// 如果数组中不存在目标值 target，返回 [-1, -1]。
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& nums, int target) {
+        vector<int> res(2, -1);
+        if(nums.empty()) return res;
+        int left1 = 0, right1 = nums.size() - 1;
+        // 先找右边界
+        while(left1 <= right1)
+        {
+            int mid = (right1 - left1) / 2 + left1;
+            if(target >= nums[mid]) left1 = mid + 1;
+            else right1 = mid - 1;
+        }
+        // 此时 right1 为右边界
+
+        int left2 = 0, right2 = nums.size() - 1;
+        // 再找左边界
+        while(left2 <= right2)
+        {
+            int mid = (right2 - left2) / 2 + left2;
+            if(target <= nums[mid]) right2 = mid - 1;
+            else left2 = mid + 1;
+        }
+        // 此时 left2 为左边界
+        if(right1 >= 0 && right1 < nums.size() && left2 >= 0 && left2 < nums.size()) // 排除索引在数组之外
+        {
+            if(nums[right1] == target) return vector<int>{left2, right1}; // 确定数组中有 target 元素
+            return res;
+        }
+        return res;
+    }
+};
+*/
+
+
+/*
+// T33 搜索旋转排序数组
+// 整数数组 nums 按升序排列，数组中的值 互不相同 。
+// 在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了 旋转，使数组变为 [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标 从 0 开始 计数）。例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。
+// 给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。
+// 你必须设计一个时间复杂度为 O(log n) 的算法解决此问题。
+
+// 思路：先写一个log复杂度的函数来判断一个序列是否有序
+class Solution {
+public:
+    // 判断nums[left, right]是否是递增的
+    bool isOrdered(vector<int>& nums, int left, int right)
+    {
+        if(left == right) return true;
+        if(right - left == 1) return (nums[left] <= nums[right]);
+
+        while(left <= right)
+        {
+            int mid = (right - left) / 2 + left;
+            if(nums[mid] >= nums[left] && nums[mid] <= nums[right]) return isOrdered(nums, left, mid) && isOrdered(nums, mid, right);
+            else return false;
+        }
+        return true;
+    }
+
+    // 下面是标准的二分查找代码
+    int searchInsert(vector<int>& nums, int target, int left, int right)
+    {
+        while(left <= right)
+        {
+            int mid = (left - right) / 2 + right;
+            if(target == nums[mid]) return mid;
+            else if(target > nums[mid]) left = mid + 1;
+            else right = mid - 1;
+        }
+        return left;
+    }
+
+    int search_1(vector<int>& nums, int target, int left, int right) {
+        if(left == right) return (nums[left] == target);
+        if(right - left == 1) return (nums[left] == target || nums[right] == target);
+
+        int mid = (right - left) / 2 + left;
+        int idx;
+        // [left, mid]和[mid, right] 肯定有一个是有序的，也有可能两个都有序
+        bool s1 = isOrdered(nums, left, mid);
+        bool s2 = isOrdered(nums, mid, right);
+
+        if(s1) 
+        {
+            idx = searchInsert(nums, target, left, mid);
+            if(idx <= mid) return (nums[idx] == target); // idx <= mid说明索引合法
+            else // 说明不在这一半
+            {
+                return search_1(nums, target, mid, right);
+            }
+        }
+        else
+        {
+            idx = searchInsert(nums, target, mid, right);
+            if(idx >= mid) return (nums[idx] == target); // idx >= mid说明索引合法
+            else // 说明不在这一半
+            {
+                return search_1(nums, target, 0, mid);
+            }
+        }
+    }
+
+    int search(vector<int>& nums, int target) {
+        return search_1(nums, target, 0, nums.size() - 1);
+    }
+};
+*/
+
+
+// 图论
+
+
+/*
+// T200 岛屿数量
+// 给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。
+// 岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。
+// 此外，你可以假设该网格的四条边均被水包围。
+
+class Solution {
+public:
+    int row, col;
+    vector<vector<int>> directs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    vector<vector<int>> is_cal;
+    bool is_val(int a, int b)
+    {
+        return (a >= 0) && (a < row) && (b >= 0) && (b < col);
+    }
+
+    int numIslands_bfs(vector<vector<char>>& grid) {
+        row = grid.size(); col = grid[0].size();
+        is_cal = vector<vector<int>>(row, vector<int>(col, 0)); // 是否被访问
+        stack<vector<int>> s;
+        int res = 0;
+        for(int i = 0; i < row; i++)
+        {
+            for(int j = 0; j < col; j++)
+            {
+                if(is_cal[i][j] || (grid[i][j] == '0')) continue;
+                res++;
+                s.push({i, j});
+                while(!s.empty())
+                {
+                    vector<int> t = s.top(); s.pop();
+                    if(is_cal[t[0]][t[1]]) continue;
+                    for(auto dir : directs)
+                    {
+                        // when point in the matrix && is not calculated && is land, it can be added into stack
+                        if(is_val(t[0] + dir[0], t[1] + dir[1]) && (!is_cal[t[0] + dir[0]][t[1] + dir[1]]) && (grid[t[0] + dir[0]][t[1] + dir[1]] == '1'))
+                        {
+                            s.push({t[0] + dir[0], t[1] + dir[1]});
+                        }
+                    }
+                    // record the t to be calculated
+                    is_cal[t[0]][t[1]] = 1;
+                }
+            }
+        }
+
+        return res;
+    }
+
+    void dfs(vector<vector<char>>& grid, int a, int b)
+    {
+        is_cal[a][b] = 1; // already calculated
+        for(auto dir : directs)
+        {
+            if(is_val(a + dir[0], b + dir[1]) && !is_cal[a + dir[0]][b + dir[1]] && grid[a + dir[0]][b + dir[1]] == '1') dfs(grid, a + dir[0], b + dir[1]);
+        }
+    }
+
+    int numIslands_dfs(vector<vector<char>>& grid){
+        row = grid.size(); col = grid[0].size();
+        is_cal = vector<vector<int>>(row, vector<int>(col, 0)); // 是否被访问
+        int res = 0;
+        for(int i = 0;i < row; i++)
+        {
+            for(int j = 0; j < col; j++)
+            {
+                if(is_cal[i][j] || (grid[i][j] == '0')) continue;
+                dfs(grid, i, j);
+                res++;
+            }
+        }
+        return res;
+    }
+};
+*/
+
+
+/*
+// T994 腐烂的橘子
+// 在给定的 m x n 网格 grid 中，每个单元格可以有以下三个值之一：
+// 值 0 代表空单元格；
+// 值 1 代表新鲜橘子；
+// 值 2 代表腐烂的橘子。
+// 每分钟，腐烂的橘子 周围 4 个方向上相邻 的新鲜橘子都会腐烂。
+// 返回 直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 -1 。
+
+class Solution {
+public:
+    int row, col; // 长宽
+    bool is_val(int a, int b)
+    {
+        return (a >= 0) && (a < row) && (b >= 0) && (b < col);
+    }
+    vector<vector<int>> directs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    
+    int orangesRotting(vector<vector<int>>& grid) {
+        row = grid.size(); col = grid[0].size();
+        queue<vector<int>> s;
+        for(int i = 0; i < row; i++)
+        {
+            for(int j = 0; j < col; j++)
+            {
+                if(grid[i][j] != 2) continue;
+                s.push({i, j});
+                grid[i][j] = -1; // 已经访问过
+            }
+        }
+
+        int res = -1;
+        while(!s.empty())
+        {
+            int l = s.size();
+            for(int k = 0; k < l; k++)
+            {
+                vector<int> t = s.front(); s.pop();
+                int x = t[0], y = t[1];
+                for(auto d : directs)
+                {
+                    if(is_val(x + d[0], y + d[1]) && (grid[x + d[0]][y + d[1]] == 1)) {
+                        s.push({x + d[0], y + d[1]});
+                        grid[x + d[0]][y + d[1]] = -1; // 防止被这个循环的其他坏橘子影响
+                    }
+                }
+            }
+            res++;
+        }
+        for(int i = 0; i < row; i++)
+        {
+            for(int j = 0; j < col; j++)
+            {
+                if(grid[i][j] == 1) return -1;
+            }
+        }
+        return (res == -1) ? 0 : res;
+    }
+};
+*/
+
+
+// T207 课程表
+// 你这个学期必须选修 numCourses 门课程，记为 0 到 numCourses - 1 。
+// 在选修某些课程之前需要一些先修课程。 先修课程按数组 prerequisites 给出，其中 prerequisites[i] = [ai, bi] ，表示如果要学习课程 ai 则 必须 先学习课程  bi 。
+// 例如，先修课程对 [0, 1] 表示：想要学习课程 0 ，你需要先完成课程 1 。
+// 请你判断是否可能完成所有课程的学习？如果可以，返回 true ；否则，返回 false 。
