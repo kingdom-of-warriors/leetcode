@@ -1595,8 +1595,45 @@ public:
 */
 
 
+/*
 // T207 课程表
 // 你这个学期必须选修 numCourses 门课程，记为 0 到 numCourses - 1 。
 // 在选修某些课程之前需要一些先修课程。 先修课程按数组 prerequisites 给出，其中 prerequisites[i] = [ai, bi] ，表示如果要学习课程 ai 则 必须 先学习课程  bi 。
 // 例如，先修课程对 [0, 1] 表示：想要学习课程 0 ，你需要先完成课程 1 。
 // 请你判断是否可能完成所有课程的学习？如果可以，返回 true ；否则，返回 false 。
+
+// 基本算法：拓扑排序：找出所有入度为0的课程，将其加入表中，再减去它们指向的点的入度
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> l; // 储存顺序
+        queue<int> q; // 度为0的节点
+        vector<int> indegree(numCourses); // id[i]表示i的入度为多少
+        vector<vector<int>> outdegree(numCourses); // od[i]表示i有哪些出度
+
+        for(auto pr : prerequisites) // 初始化出度入度
+        {
+            indegree[pr[0]]++;
+            outdegree[pr[1]].push_back(pr[0]);
+        }
+        for(int i = 0; i < numCourses; i++)
+        {
+            // 说明i课程是入度为0的课程
+            if(indegree[i] == 0) q.push(i);
+        }
+
+        while(!q.empty())
+        {
+            int tmp = q.front(); q.pop(); // 学的课程
+            l.push_back(tmp); 
+            // 去掉tmp有关的出度和入度
+            for(auto course : outdegree[tmp])
+            {
+                if(--indegree[course] == 0) q.push(course);
+            }
+        }
+
+        return l.size() == numCourses;
+    }
+};
+*/
