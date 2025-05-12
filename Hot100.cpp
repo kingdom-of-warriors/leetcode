@@ -1394,18 +1394,15 @@ public:
         if(left == right) return true;
         if(right - left == 1) return (nums[left] <= nums[right]);
 
-        while(left <= right)
-        {
-            int mid = (right - left) / 2 + left;
-            if(nums[mid] >= nums[left] && nums[mid] <= nums[right]) return isOrdered(nums, left, mid) && isOrdered(nums, mid, right);
-            else return false;
-        }
-        return true;
+        int mid = (right - left) / 2 + left;
+        if(nums[mid] >= nums[left] && nums[mid] <= nums[right]) return isOrdered(nums, left, mid) && isOrdered(nums, mid, right);
+        else return false;
     }
 
     // 下面是标准的二分查找代码
     int searchInsert(vector<int>& nums, int target, int left, int right)
     {
+        int a = left, b = right, res = 0;
         while(left <= right)
         {
             int mid = (left - right) / 2 + right;
@@ -1413,12 +1410,22 @@ public:
             else if(target > nums[mid]) left = mid + 1;
             else right = mid - 1;
         }
-        return left;
+        res = left;
+        
+        // nums[res]!=target和res<a和res>b都说明没找到，返回-1
+        if(res < a || res > b) return -1;
+        if(nums[res] != target) return -1;
+        else return res;
     }
 
     int search_1(vector<int>& nums, int target, int left, int right) {
-        if(left == right) return (nums[left] == target);
-        if(right - left == 1) return (nums[left] == target || nums[right] == target);
+        if(left == right) return (nums[left] == target) ? left : -1;
+        if(right - left == 1)
+        {
+            if(nums[left] == target) return left;
+            if(nums[right] == target) return right;
+            else return -1;
+        }
 
         int mid = (right - left) / 2 + left;
         int idx;
@@ -1429,7 +1436,7 @@ public:
         if(s1) 
         {
             idx = searchInsert(nums, target, left, mid);
-            if(idx <= mid) return (nums[idx] == target); // idx <= mid说明索引合法
+            if(idx != -1) return idx; // 说明找到了
             else // 说明不在这一半
             {
                 return search_1(nums, target, mid, right);
@@ -1438,7 +1445,7 @@ public:
         else
         {
             idx = searchInsert(nums, target, mid, right);
-            if(idx >= mid) return (nums[idx] == target); // idx >= mid说明索引合法
+            if(idx != -1) return idx; // 说明找到了
             else // 说明不在这一半
             {
                 return search_1(nums, target, 0, mid);
@@ -1452,6 +1459,100 @@ public:
 };
 */
 
+
+/*
+// T4 寻找两个正序数组的中位数
+// 给定两个大小分别为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的 中位数 。
+// 算法的时间复杂度应该为 O(log (m+n)) 。
+
+// 思路：找到分割线 
+// 1 2 5     1 2 |  5    ||    1 3 5 7     1 3  |  5 7
+// 3 4       3   |  4    ||    2 4           2  |  4
+// 1  2 |3  5
+// 4  6 |7  8
+class Solution {
+public:
+    int len1, len2, min_len, res;
+    int is_valid(vector<int>& nums1, vector<int>& nums2, int mid) {
+        int mid_2 = res - mid; // 长序列左边有几个数
+        // 处理特殊情况
+        if(mid == len1)
+        {
+            if(nums1[len1 - 1] <= nums2[mid_2]) return 0;
+            else return -1; // 表示mid太大了
+        }
+        if(mid == 0)
+        {
+            if(nums1[0] >= nums2[mid_2 - 1]) return 0;
+            else return 1; // 表示mid太小了
+        }
+        if(nums1[mid - 1] <= nums2[mid_2] && nums2[mid_2 - 1] <= nums1[mid]) return 0;
+        if(nums1[mid - 1] > nums2[mid_2]) return -1; // 表示mid太大
+        else return 1; // 表示mid太小
+    }
+
+    double findDivider(vector<int>& nums1, vector<int>& nums2) {
+        // 处理空数组情况
+        if(nums1.empty()) return (nums2.size() % 2) ? nums2[nums2.size() / 2] : double(nums2[nums2.size() / 2] + nums2[nums2.size() / 2 - 1]) / 2;
+
+        len1 = nums1.size();
+        len2 = nums2.size();
+        res = (len1 + len2 + 1) / 2;
+        // 默认nums1.size() <= nums2.size()
+        // 可选择的机会为 0,1,...,min_len, 代表短的序列左边有几个数
+        int left = 0, right = len1; // left 代表左边有几个数
+        // 标准二分代码
+        while(left <= right)
+        {
+            int mid = (right - left) / 2 + left;
+            if(is_valid(nums1, nums2, mid) == 0)
+            {
+                left = mid;
+                break;
+            }
+            if(is_valid(nums1, nums2, mid) == -1) right = mid - 1;
+            else left = mid + 1; 
+        }
+        int divider = left;
+
+        if((len1 + len2) % 2 == 0) 
+        {
+            if(divider == 0)
+            {
+                if(res - divider == len2) return double(nums2[res - divider - 1] + nums1[divider]) / 2;
+                else return double(nums2[res - divider - 1] + min(nums1[divider], nums2[res - divider])) / 2;
+            }
+            if(divider == len1)
+            {
+                if(res == divider) return double(nums1[divider - 1] + nums2[res - divider]) / 2;
+                else return double((max(nums1[divider - 1], nums2[res - divider - 1]) + nums2[res - divider])) / 2;
+            }
+            return double((max(nums1[divider - 1], nums2[res - divider - 1]) + min(nums1[divider], nums2[res - divider]))) / 2;
+        }
+        else 
+        {
+            if(divider == 0) return nums2[res - divider - 1];
+            if(divider == res) return nums1[divider - 1];
+            return max(nums1[divider - 1], nums2[res - divider - 1]);
+        }
+    }
+
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        return (nums1.size() <= nums2.size()) ? findDivider(nums1, nums2) : findDivider(nums2, nums1);
+    }
+};
+*/
+int main() {
+
+    
+    Solution solution;
+    vector<int> nums3 = {4};
+    vector<int> nums4 = {1,2,3,5};
+    cout << "[1,3]和[2]的中位数: " 
+         << solution.findMedianSortedArrays(nums3, nums4) << endl;
+    
+    return 0;
+}
 
 // 图论
 
@@ -1637,3 +1738,59 @@ public:
     }
 };
 */
+
+
+/*
+// T208 实现前缀树
+// Trie（发音类似 "try"）或者说 前缀树 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的
+//应用情景，例如自动补全和拼写检查。
+
+// 请你实现 Trie 类：
+
+// Trie() 初始化前缀树对象。
+// void insert(String word) 向前缀树中插入字符串 word 。
+// boolean search(String word) 如果字符串 word 在前缀树中，返回 true（即，在检索之前已经插入）；否则，返回 false 。
+// boolean startsWith(String prefix) 如果之前已经插入的字符串 word 的前缀之一为 prefix ，返回 true ；否则，返回 false 。
+class Trie {
+private:
+    vector<Trie*> childs;
+    bool is_end; // 判断是否有单词在这里终止
+public:
+    Trie() : childs(26, nullptr), is_end(false) {} // 表示a-z的摆放位置，使用成员初始化列表
+    
+    void insert(string word) {
+        Trie* tmp = this; // 用于遍历
+        for(int i = 0; i < word.size(); i++)
+        {
+            if(!tmp->childs[word[i] - 'a']) // 没有这个字母，需要分配一个空间
+            {
+                tmp->childs[word[i] - 'a'] = new Trie();
+            }
+            tmp = tmp->childs[word[i] - 'a'];
+        }
+        tmp->is_end = true; // 表示有单词在这里结束
+    }
+    
+    bool search(string word) {
+        Trie* tmp = this; // 用于遍历
+        for(int i = 0; i < word.size(); i++)
+        {
+            if(!tmp->childs[word[i] - 'a']) return false;
+            tmp = tmp->childs[word[i] - 'a'];
+        }
+        return tmp->is_end;
+    }
+    
+    bool startsWith(string prefix) {
+        Trie* tmp = this; // 用于遍历
+        for(int i = 0; i < prefix.size(); i++)
+        {
+            if(!tmp->childs[prefix[i] - 'a']) return false; // 字母prefix[i]不存在，返回false
+            tmp = tmp->childs[prefix[i] - 'a'];
+        }
+        return true;
+    }
+};
+*/
+
+
