@@ -626,6 +626,41 @@ public:
 */
 
 
+/*
+// T105 从前序遍历和中序遍历生成二叉树
+// 给定两个整数数组 preorder 和 inorder ，其中 preorder 是二叉树的先序遍历， inorder 是同一棵树的中序遍历，请构造二叉树并返回其根节点。
+
+// 思路：使用递归构造，不停找到根节点
+class Solution {
+public:
+    int find(vector<int>& inorder, int l, int r, int target)
+    {
+        for(int i = l; i <= r; i++)
+        {
+            if(inorder[i] == target) return i;
+        }
+        return -1;
+    }
+
+    TreeNode* buildTree_1(vector<int>& preorder, vector<int>& inorder, int l, int r, int root_idx_pre) {
+        if(l > r) return nullptr;
+        int root_val = preorder[root_idx_pre];
+        TreeNode* root = new TreeNode(root_val); // 建立根节点
+        int root_idx_in = find(inorder, l, r, root_val);
+        int num_left = root_idx_in - l, num_right = r - root_idx_in;
+        
+        root->left = buildTree_1(preorder, inorder, l, root_idx_in - 1, root_idx_pre + 1);
+        root->right = buildTree_1(preorder, inorder, root_idx_in + 1, r, root_idx_pre + 1 + num_left);
+
+        return root;
+    }
+
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        int len_inorder = inorder.size() - 1;
+        return buildTree_1(preorder, inorder, 0, len_inorder, 0);
+    }
+};
+*/
 
 
 // 链表
@@ -1542,17 +1577,7 @@ public:
     }
 };
 */
-int main() {
 
-    
-    Solution solution;
-    vector<int> nums3 = {4};
-    vector<int> nums4 = {1,2,3,5};
-    cout << "[1,3]和[2]的中位数: " 
-         << solution.findMedianSortedArrays(nums3, nums4) << endl;
-    
-    return 0;
-}
 
 // 图论
 
@@ -1793,4 +1818,45 @@ public:
 };
 */
 
+
+// 回溯
+
+/*
+// T46 全排列
+// 给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
+class Solution {
+public:
+    vector<vector<int>> res;
+    vector<int> is_used;
+    void back(vector<int> tmp, vector<int>& nums, vector<int> is_used)
+    {
+        if(tmp.size() == nums.size()) // 终止条件
+        {
+            res.push_back(tmp);
+            return;
+        }
+
+        for(int i = 0; i < nums.size(); i++)
+        {
+            if(!is_used[i])
+            {
+                is_used[i] = 1; // 已经使用过
+                tmp.push_back(nums[i]);
+
+                back(tmp, nums, is_used);
+                tmp.pop_back();
+                is_used[i] = 0; // 还原回去
+            }
+        }
+
+        return;
+    }
+    vector<vector<int>> permute(vector<int>& nums) {
+        is_used = vector<int>(nums.size(), 0);
+        vector<int> tmp;
+        back(tmp, nums, is_used);
+        return res;
+    }
+};
+*/
 
