@@ -1860,3 +1860,104 @@ public:
 };
 */
 
+
+/*
+// T78 子集
+// 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+// 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
+
+class Solution {
+public:
+    vector<vector<int>> res;
+    // num 代表能选几个数
+    void back(vector<int>& nums, vector<int> tmp, int num, int min_idx) {
+        if(num == 0)
+        {
+            res.push_back(tmp);
+            return;
+        }
+
+        for(int i = min_idx; i < nums.size(); i++) // min_idx 表示最小能选的下标
+        {
+            tmp.push_back(nums[i]);
+            back(nums, tmp, num - 1, i + 1);
+            tmp.pop_back(); // 回溯法
+        }
+        return;
+    }
+    vector<vector<int>> subsets(vector<int>& nums) {
+        for(int i = 0; i <= nums.size(); i++)
+        {
+            vector<int> tmp;
+            back(nums, tmp, i, 0);
+        }
+        return res;
+    }
+};
+*/
+
+
+/*
+// T17 电话号码的字符组合
+// 给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
+// 给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+class Solution {
+public:
+    vector<string> mapping = {"abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+    vector<string> res;
+    void back(string digits, string tmp) {
+        if(tmp.size() == digits.size())
+        {
+            res.push_back(tmp);
+            return;
+        }
+
+        int idx = digits[tmp.size()] - '2'; // 计算出应该用哪一个mapping
+        for(char c : mapping[idx]) // 遍历剩下的字母
+        {
+            tmp.push_back(c);
+            back(digits, tmp);
+            tmp.pop_back();
+        }
+        return;
+    }
+    vector<string> letterCombinations(string digits) {
+        if(digits.empty()) return res;
+        string tmp;
+        back(digits, tmp);
+        return res;
+    }
+};
+*/
+
+
+/*
+// T39 组合总和
+// 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。
+// candidates 中的 同一个 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的。
+class Solution {
+public:
+    vector<vector<int>> res;
+    void back(vector<int>& candidates, int target, vector<int> tmp, int min_idx) {
+        if(target == 0)
+        {
+            res.push_back(tmp);
+            return;
+        }
+
+        for(int i = min_idx; i < candidates.size(); i++)
+        {
+            if(candidates[i] > target) continue;
+            tmp.push_back(candidates[i]);
+            back(candidates, target - candidates[i], tmp, i); // min_idx表示最小可以选的下标
+            tmp.pop_back();
+        }
+        return;
+    }
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<int> tmp;
+        back(candidates, target, tmp, 0);
+        return res;
+    }
+};
+*/
